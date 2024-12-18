@@ -1,9 +1,9 @@
 name: Nightly Release
 
 on:
-  # schedule:
-  # - cron:  '0 0 * * ?'
-  workflow_dispatch: # Enables manual triggering
+  schedule:
+  - cron:  '35 2 * * ?'
+  # workflow_dispatch: # Enables manual triggering
 
 
 jobs:
