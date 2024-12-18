@@ -13,6 +13,11 @@ jobs:
     outputs:
       stale: ${{ steps.activity_check.outputs.stale }}
     steps:
+      - name: Ensure GitHub connectivity
+        id: github_connectivity
+        run:   |
+          echo "140.82.114.4 github.com" | sudo tee -a /etc/hosts
+          ping -c 3 github.com
       - name:  Activity check
         id: activity_check
         run:   |
