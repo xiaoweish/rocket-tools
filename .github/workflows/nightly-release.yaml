@@ -16,12 +16,6 @@ jobs:
       - name:  Activity check
         id: activity_check
         run:   |
-          echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
-          echo "nameserver 1.0.0.1" | sudo tee -a /etc/resolv.conf
-          echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
-          echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf
-          echo "nameserver 9.9.9.9" | sudo tee -a /etc/resolv.conf
-          echo "nameserver 208.67.222.222" | sudo tee -a /etc/resolv.conf
           curl -sL https://api.github.com/repos/$GITHUB_REPOSITORY/commits | jq -r '[.[]][0]' > $HOME/commit.json
           date="$(jq -r '.commit.author.date' $HOME/commit.json)"
           timestamp=$(date --utc -d "$date" +%s)
@@ -57,7 +51,7 @@ jobs:
       matrix:
         os:     [ubuntu-20.04, ubuntu-22.04]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
 
       - name: initialize submodules
         run: |
