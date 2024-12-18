@@ -16,6 +16,12 @@ jobs:
       - name:  Activity check
         id: activity_check
         run:   |
+          echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
+          echo "nameserver 1.0.0.1" | sudo tee -a /etc/resolv.conf
+          echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
+          echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf
+          echo "nameserver 9.9.9.9" | sudo tee -a /etc/resolv.conf
+          echo "nameserver 208.67.222.222" | sudo tee -a /etc/resolv.conf
           curl -sL https://api.github.com/repos/$GITHUB_REPOSITORY/commits | jq -r '[.[]][0]' > $HOME/commit.json
           date="$(jq -r '.commit.author.date' $HOME/commit.json)"
           timestamp=$(date --utc -d "$date" +%s)
@@ -51,11 +57,19 @@ jobs:
       matrix:
         os:     [ubuntu-20.04, ubuntu-22.04]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: initialize submodules
         run: |
           git submodule update --init --recursive --recommend-shallow
+
+      - name: Cache Git Repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.git
+          key: ${{ runner.os }}-git-cache
+          restore-keys: |
+            ${{ runner.os }}-git-cache
 
       - name: install apt dependencies
         run: sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev libusb-1.0-0-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev device-tree-compiler pkg-config libexpat-dev libfl-dev
